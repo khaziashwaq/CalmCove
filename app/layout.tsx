@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"] });
+import { Poppins, Roboto_Mono } from 'next/font/google'
 
-export const metadata: Metadata = {
-  title: "CalmCove",
-  description: "",
-};
+ 
+const poppins = Poppins({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
+});
 
 export default function RootLayout({
   children,
@@ -17,11 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${poppins.variable}`}>
+      <body>
         <Navbar />
         {children}
         <Footer />
+        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
         </body>
     </html>
   );
