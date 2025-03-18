@@ -1,35 +1,20 @@
-const TestimonialCard = ({ heading, body }) => {
+interface TestimonialCardProps {
+  heading: string;
+  body: string;
+}
+
+const TestimonialCard = ({ heading, body }: TestimonialCardProps) => {
   return (
-    <div className="mb-10 lg:grid lg:grid-rows-3 max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <a href="#" className=" row-span-1">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {heading}
-        </h5>
-      </a>
-      <p className="mb-3 row-span-2 font-normal text-gray-700 dark:text-gray-400">
-        {body}
-      </p>
-      <a
-        href="#"
-        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        Read more
-        <svg
-          className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"
-          />
-        </svg>
-      </a>
+    <div className="h-[400px] w-[300px] bg-white rounded-lg shadow-lg p-6 flex flex-col">
+      <div className="flex-none">
+        <h2 className="text-xl font-bold mb-4 text-gray-900">{heading}</h2>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <p className="text-gray-600 line-clamp-6">{body}</p>
+      </div>
+      <div className="flex-none mt-4">
+        <span className="text-blue-500 hover:text-blue-600">Read more →</span>
+      </div>
     </div>
   );
 };

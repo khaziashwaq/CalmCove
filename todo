@@ -1,0 +1,11 @@
+✔ articles page complete frontend @started(25-03-10 23:49) @done(25-03-11 01:00) @lasted(1h11m58s)
+✔ stories complete blog and comment section @started(25-03-11 11:59) @done(25-03-11 17:29) @lasted(5h30m59s)
+✔ stories likes needs to be fixed @done(25-03-12 02:06)
+✔ post a story @started(25-03-12 16:14) @done(25-03-13 00:57) @lasted(8h43m39s)
+✔ fix navbar that highlightts when clicked @started(25-03-12 16:57) @done(25-03-12 17:15) @lasted(18m55s)
+✔ stories carousel? @done(25-03-13 23:09)
+
+✔ story has an issue when the user is logged in and posting it shows anonymous @done(25-03-17 16:39)
+☐ implement journalling functionality
+☐ helpline based on users location
+☐ articles ai summarize and news api integration(LM studio integration)

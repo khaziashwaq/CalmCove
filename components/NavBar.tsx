@@ -1,83 +1,214 @@
-import navbaricon from "../public/navbaricon.png";
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { auth, signOutUser } from "@/firebaseConfig";
+import { useEffect, useState, useRef } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { useRouter, usePathname } from "next/navigation";
+import { User } from "@/components/UserIcon";
 
 const NavBar = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Reset active section when navigating away from home
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSection(null);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      setIsMenuOpen(false);
+      await signOutUser();
+      router.push("/signIn");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleStoriesClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setActiveSection("stories");
+    if (pathname !== "/") {
+      router.push("/?section=stories");
+    } else {
+      document
+        .getElementById("Stories")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleAboutClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setActiveSection("about");
+    if (pathname !== "/") {
+      router.push("/?section=about");
+    } else {
+      document.getElementById("About")?.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const handleHomeClick = () => {
+    setActiveSection(null);
+  };
+
   return (
-    <nav className="bg-white dark:bg-gray-900 sticky w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+    <nav className="sticky top-0 z-[100] w-full border-b border-gray-200 bg-white">
+      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
+        <Link
+          href="/"
+          className="flex items-center space-x-3"
+          onClick={handleHomeClick}
+        >
+          <span className="self-center text-2xl font-semibold whitespace-nowrap">
             CalmCove
           </span>
-        </a>
-        <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          <button
-            type="button"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          >
-            Get Help Now
-          </button>
-          <button
-            data-collapse-toggle="navbar-sticky"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-sticky"
-            aria-expanded="false"
-          >
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
+        </Link>
+
+        <div className="flex items-center md:order-2">
+          {user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-700 text-center text-white transition-all duration-200 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </button>
+              {isMenuOpen && (
+                <div className="z-[100] absolute right-0 mt-2 w-56 rounded-lg bg-white py-1 shadow-lg">
+                  <div className="border-b border-gray-100 px-4 py-3">
+                    <p className="text-sm text-gray-500">Signed in as</p>
+                    <p className="truncate text-sm font-medium text-gray-900">
+                      {user.isAnonymous ? "Anonymous User" : user.email}
+                    </p>
+                  </div>
+                  <div className="py-1">
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                    >
+                      Your Profile
+                    </Link>
+                  </div>
+                  <div className="border-t border-gray-100 py-1">
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full px-4 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link href="/signIn">
+              <button className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                Sign In
+              </button>
+            </Link>
+          )}
         </div>
-        <div
-          className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-          id="navbar-sticky"
-        >
-          <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+
+        <div className="hidden w-full items-center justify-between md:flex md:w-auto md:order-1">
+          <ul className="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:p-0">
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                aria-current="page"
+              <Link
+                href="/"
+                onClick={handleHomeClick}
+                className={`block rounded py-2 pl-3 pr-4 transition-colors ${
+                  pathname === "/" && !activeSection
+                    ? "text-blue-700"
+                    : "text-gray-900"
+                } md:bg-transparent md:p-0 hover:text-blue-700`}
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
               <a
                 href="#About"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                onClick={handleAboutClick}
+                className={`block rounded py-2 pl-3 pr-4 transition-colors ${
+                  activeSection === "about" ? "text-blue-700" : "text-gray-900"
+                } md:p-0 hover:text-blue-700`}
               >
                 About
               </a>
             </li>
             <li>
               <a
-                href="#Testimonials"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                href="#Stories"
+                onClick={handleStoriesClick}
+                className={`block rounded py-2 pl-3 pr-4 transition-colors ${
+                  activeSection === "stories"
+                    ? "text-blue-700"
+                    : "text-gray-900"
+                } md:p-0 hover:text-blue-700`}
               >
-                Testimonials
+                Stories
               </a>
             </li>
             <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-              >
-                Contact
-              </a>
+              {user ? (
+                <Link
+                  href="/journal"
+                  className={`block rounded py-2 pl-3 pr-4 transition-colors ${
+                    pathname === "/journal" ? "text-blue-700" : "text-gray-900"
+                  } md:p-0 hover:text-blue-700`}
+                >
+                  Journal
+                </Link>
+              ) : (
+                <Link
+                  href="/signIn"
+                  className={`block rounded py-2 pl-3 pr-4 transition-colors ${
+                    pathname === "/journal" ? "text-blue-700" : "text-gray-900"
+                  } md:p-0 hover:text-blue-700`}
+                >
+                  Journal
+                </Link>
+              )}
             </li>
           </ul>
         </div>

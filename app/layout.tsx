@@ -1,6 +1,8 @@
+"use client";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
+import { usePathname } from "next/navigation";
 
 import { Poppins, Roboto_Mono } from "next/font/google";
 
@@ -16,14 +18,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" className={`${poppins.variable}`}>
-      <body>
-        <NavBar />
-        {children}
-        <Footer />
-        <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
-      </body>
-    </html>
-  );
+  const pathname = usePathname();
+  if (pathname.includes("/signIn") || pathname.includes("/signUp")) {
+    return (
+      <html lang="en" className={`${poppins.variable}`}>
+        <body>
+          {children}
+          <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+        </body>
+      </html>
+    );
+  } else {
+    return (
+      <html lang="en" className={`${poppins.variable}`}>
+        <body>
+          <NavBar />
+          {children}
+          {!pathname.includes("/journal") && <Footer />}
+          <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+        </body>
+      </html>
+    );
+  }
 }
