@@ -6,7 +6,6 @@ CalmCove is a mental health journaling and support platform designed to help use
 
 - **Mental Health Journal** – Users can log their thoughts and emotions securely.
 - **Anonymous Chat Support** – Provides a safe space for users to communicate and seek help.
-- **Location-Based Helpline Directory** – Automatically fetches mental health helpline numbers based on the user's location.
 - **Secure Authentication** – User authentication with email/password sign-up and profile management using Firebase.
 
 ## Tech Stack
@@ -47,14 +46,10 @@ CalmCove is a mental health journaling and support platform designed to help use
 
 ## Roadmap
 
-- Add mood tracking and insights.
-- Improve chat support with AI-powered suggestions.
-- Implement multi-device sync for journals.
+- Add mood tracking and insights with AI-powered suggestions.
+- Location based mental health helpline directory.
+  
 
 ## Contributing
 
 Contributions are welcome! Feel free to fork the repo and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
