@@ -270,13 +270,13 @@ const emotions = [
   },
   {
     emoji: "⚡",
-    name: "Angry",
+    name: "Excited",
     color: "bg-gradient-to-br from-rose-100 to-red-50 shadow-lg",
     hover: "hover:from-rose-200 hover:to-red-100 hover:shadow-xl",
   },
   {
     emoji: "🌸",
-    name: "Calm",
+    name: "Peaceful",
     color: "bg-gradient-to-br from-emerald-100 to-green-50 shadow-lg",
     hover: "hover:from-emerald-200 hover:to-green-100 hover:shadow-xl",
   },
@@ -287,10 +287,10 @@ const emotions = [
     hover: "hover:from-violet-200 hover:to-purple-100 hover:shadow-xl",
   },
   {
-    emoji: "✨",
-    name: "Grateful",
-    color: "bg-gradient-to-br from-orange-100 to-amber-50 shadow-lg",
-    hover: "hover:from-orange-200 hover:to-amber-100 hover:shadow-xl",
+    emoji: "😴",
+    name: "Tired",
+    color: "bg-gradient-to-br from-gray-100 to-slate-50 shadow-lg",
+    hover: "hover:from-gray-200 hover:to-slate-100 hover:shadow-xl",
   },
 ];
 
