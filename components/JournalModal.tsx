@@ -270,13 +270,13 @@ const emotions = [
   },
   {
     emoji: "⚡",
-    name: "Excited",
+    name: "Angry",
     color: "bg-gradient-to-br from-rose-100 to-red-50 shadow-lg",
     hover: "hover:from-rose-200 hover:to-red-100 hover:shadow-xl",
   },
   {
     emoji: "🌸",
-    name: "Peaceful",
+    name: "Calm",
     color: "bg-gradient-to-br from-emerald-100 to-green-50 shadow-lg",
     hover: "hover:from-emerald-200 hover:to-green-100 hover:shadow-xl",
   },
@@ -287,10 +287,10 @@ const emotions = [
     hover: "hover:from-violet-200 hover:to-purple-100 hover:shadow-xl",
   },
   {
-    emoji: "😴",
-    name: "Tired",
-    color: "bg-gradient-to-br from-gray-100 to-slate-50 shadow-lg",
-    hover: "hover:from-gray-200 hover:to-slate-100 hover:shadow-xl",
+    emoji: "✨",
+    name: "Grateful",
+    color: "bg-gradient-to-br from-orange-100 to-amber-50 shadow-lg",
+    hover: "hover:from-orange-200 hover:to-amber-100 hover:shadow-xl",
   },
 ];
 
@@ -678,7 +678,7 @@ export default function JournalModal({
               >
                 <h3 className="text-lg font-semibold mb-4">Insights</h3>
                 <div className="space-y-4">
-                  {/* {insights.map((insight, index) => (
+                  {insights.map((insight, index) => (
                     <div
                       key={index}
                       className={`p-4 rounded-lg ${
@@ -712,60 +712,7 @@ export default function JournalModal({
                         {insight.content}
                       </p>
                     </div>
-                  ))} */}
-
-                  <div className="text-sm m-auto p-2">
-                    <div className="mb-4">
-                      <h4 className="font-medium">Journal ID</h4>
-                      <p>{JSON.parse(journalEntry || "{}").id}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Date</h4>
-                      <p>{JSON.parse(journalEntry || "{}").date}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Mood</h4>
-                      <p>{JSON.parse(journalEntry || "{}").mood}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Daily Tasks</h4>
-                      <pre>{JSON.parse(journalEntry || "{}").daily_tasks}</pre>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Goals for Tomorrow</h4>
-                      <p>
-                        {JSON.parse(journalEntry || "{}").goals_for_tomorrow}
-                      </p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Creative Ideas</h4>
-                      <p>{JSON.parse(journalEntry || "{}").creative_ideas}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Habit Tracker</h4>
-                      <pre>
-                        {JSON.parse(journalEntry || "{}").habit_tracker}
-                      </pre>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Today's Wins</h4>
-                      <p>{JSON.parse(journalEntry || "{}").todays_wins}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Gratitude List</h4>
-                      <p>{JSON.parse(journalEntry || "{}").gratitude_list}</p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">Personal Reflections</h4>
-                      <p>
-                        {JSON.parse(journalEntry || "{}").personal_reflections}
-                      </p>
-                    </div>
-                    <div className="mb-4">
-                      <h4 className="font-medium">User ID</h4>
-                      <p>{JSON.parse(journalEntry || "{}").user_id}</p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
