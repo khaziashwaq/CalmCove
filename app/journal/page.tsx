@@ -19,7 +19,7 @@ const monthNames = [
   "December",
 ];
 
-export default function journal() {
+export default function Journal() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);

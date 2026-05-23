@@ -93,7 +93,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
       (ref) =>
         ref &&
         ref.getAttribute("data-month") === `${monthIndex}` &&
-        ref.getAttribute("data-day") === `${dayIndex}`
+        ref.getAttribute("data-day") === `${dayIndex}`,
     );
 
     const targetElement = dayRefs.current[targetDayIndex];
@@ -202,7 +202,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
 
     // Pre-compute the first valid date index to avoid O(n²) check per cell
     const firstValidIndex = calendarDays.findIndex(
-      ({ month, day }) => month >= 0 && new Date(year, month, day) <= today
+      ({ month, day }) => month >= 0 && new Date(year, month, day) <= today,
     );
 
     const calendar = calendarWeeks.map((week, weekIndex) => (
@@ -222,7 +222,10 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
 
           const isFutureDate = new Date(year, month, day) > today;
           const isPastDate = !isToday && !isFutureDate;
-          const isDisabledDate = isFutureDate || index < firstValidIndex || (isPastDate && !hasEntry);
+          const isDisabledDate =
+            isFutureDate ||
+            index < firstValidIndex ||
+            (isPastDate && !hasEntry);
 
           const moodEmojiMap: Record<string, string> = {
             Happy: "🌟",
@@ -249,24 +252,31 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
                 }
               }}
               className={`relative m-[-0.5px] group aspect-square w-full grow rounded-lg border border-sand-200/40 font-medium transition-all duration-300 sm:-m-px sm:rounded-xl sm:border md:rounded-2xl lg:rounded-3xl ${
-                isDisabledDate ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:border-rose-300 hover:shadow-soft"
+                isDisabledDate
+                  ? "cursor-not-allowed opacity-40"
+                  : "cursor-pointer hover:border-rose-300 hover:shadow-soft"
               } ${
-                hasEntry ? "bg-gradient-to-br from-rose-50/60 to-rose-100/40 border-rose-200/60" : ""
+                hasEntry
+                  ? "bg-gradient-to-br from-rose-50/60 to-rose-100/40 border-rose-200/60"
+                  : ""
               }`}
             >
               <span
                 className={`absolute left-0.5 top-0.5 flex size-4 items-center justify-center rounded-full text-[10px] sm:size-5 sm:text-xs sm:left-1 sm:top-1 md:size-6 md:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${
-                  isToday ? "bg-rose-300 font-semibold text-white shadow-glow" : ""
+                  isToday
+                    ? "bg-rose-300 font-semibold text-white shadow-glow"
+                    : ""
                 } ${
-                  month < 0 || isFutureDate
-                    ? "text-sand-400"
-                    : "text-sand-700"
+                  month < 0 || isFutureDate ? "text-sand-400" : "text-sand-700"
                 }`}
               >
                 {day}
               </span>
               {hasEntry && entryMood && (
-                <span className="absolute flex items-center justify-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl lg:text-4xl 2xl:text-5xl" title={entryMood}>
+                <span
+                  className="absolute flex items-center justify-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl lg:text-4xl 2xl:text-5xl"
+                  title={entryMood}
+                >
                   {moodEmojiMap[entryMood] || "😐"}
                 </span>
               )}
@@ -319,7 +329,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
           if (entry.isIntersecting) {
             const month = parseInt(
               entry.target.getAttribute("data-month")!,
-              10
+              10,
             );
             setSelectedMonth(month);
           }
@@ -329,7 +339,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
         root: calendarContainer,
         rootMargin: "-75% 0px -25% 0px",
         threshold: 0,
-      }
+      },
     );
 
     dayRefs.current.forEach((ref) => {
@@ -430,7 +440,9 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
           onClose={handleModalClose}
         />
       )}
-      <div className="w-full px-3 pt-3 sm:px-5 sm:pt-4 md:px-8 md:pt-6">{generateCalendar}</div>
+      <div className="w-full px-3 pt-3 sm:px-5 sm:pt-4 md:px-8 md:pt-6">
+        {generateCalendar}
+      </div>
     </div>
   );
 };

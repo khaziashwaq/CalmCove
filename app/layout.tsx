@@ -49,7 +49,9 @@ export default function RootLayout({
         <body className="h-screen overflow-hidden flex flex-col bg-sand-50">
           <AmbientBackground />
           <NavBar />
-          <main className="flex-1 overflow-y-auto overflow-x-hidden">{children}</main>
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">
+            {children}
+          </main>
         </body>
       </html>
     );

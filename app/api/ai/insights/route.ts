@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(
         { error: "Missing authorization" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -44,10 +44,7 @@ export async function POST(request: Request) {
     const auth = getFirebaseAdmin();
     const user = await auth.verifyIdToken(token);
     if (!user?.uid) {
-      return NextResponse.json(
-        { error: "Invalid token" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
     // Get Groq key from user-provided header or fallback to env
@@ -68,27 +65,44 @@ export async function POST(request: Request) {
       for (const entry of recentEntries) {
         const e = entry as any;
         userMessage += `\n📅 ${e.date} — Mood: "${e.mood || "Unknown"}"\n`;
-        if (e.personal_reflections) userMessage += `  Reflections: "${e.personal_reflections}"\n`;
-        if (e.gratitude_list) userMessage += `  Grateful for: ${e.gratitude_list}\n`;
+        if (e.personal_reflections)
+          userMessage += `  Reflections: "${e.personal_reflections}"\n`;
+        if (e.gratitude_list)
+          userMessage += `  Grateful for: ${e.gratitude_list}\n`;
         if (e.todays_wins) userMessage += `  Wins: ${e.todays_wins}\n`;
-        if (e.goals_for_tomorrow) userMessage += `  Goals for tomorrow: ${e.goals_for_tomorrow}\n`;
+        if (e.goals_for_tomorrow)
+          userMessage += `  Goals for tomorrow: ${e.goals_for_tomorrow}\n`;
         if (e.creative_ideas) userMessage += `  Ideas: ${e.creative_ideas}\n`;
         if (e.habit_tracker) {
           try {
             const habits = JSON.parse(e.habit_tracker);
-            const completed = habits.filter((h: any) => h.completed).map((h: any) => h.text);
-            const missed = habits.filter((h: any) => !h.completed).map((h: any) => h.text);
-            if (completed.length) userMessage += `  Habits completed: ${completed.join(", ")}\n`;
-            if (missed.length) userMessage += `  Habits missed: ${missed.join(", ")}\n`;
+            const completed = habits
+              .filter((h: any) => h.completed)
+              .map((h: any) => h.text);
+            const missed = habits
+              .filter((h: any) => !h.completed)
+              .map((h: any) => h.text);
+            if (completed.length)
+              userMessage += `  Habits completed: ${completed.join(", ")}\n`;
+            if (missed.length)
+              userMessage += `  Habits missed: ${missed.join(", ")}\n`;
           } catch {}
         }
         if (e.daily_tasks) {
           try {
             const tasks = JSON.parse(e.daily_tasks);
-            const done = tasks.filter((t: any) => t.completed).map((t: any) => t.text).filter(Boolean);
-            const pending = tasks.filter((t: any) => !t.completed).map((t: any) => t.text).filter(Boolean);
-            if (done.length) userMessage += `  Tasks done: ${done.join(", ")}\n`;
-            if (pending.length) userMessage += `  Tasks pending: ${pending.join(", ")}\n`;
+            const done = tasks
+              .filter((t: any) => t.completed)
+              .map((t: any) => t.text)
+              .filter(Boolean);
+            const pending = tasks
+              .filter((t: any) => !t.completed)
+              .map((t: any) => t.text)
+              .filter(Boolean);
+            if (done.length)
+              userMessage += `  Tasks done: ${done.join(", ")}\n`;
+            if (pending.length)
+              userMessage += `  Tasks pending: ${pending.join(", ")}\n`;
           } catch {}
         }
       }
@@ -114,9 +128,11 @@ export async function POST(request: Request) {
 
     if (!userMessage.trim()) {
       return NextResponse.json({
-        mood_reflection: "Take your time — this is your space. There's no rush to fill it. 🌿",
+        mood_reflection:
+          "Take your time — this is your space. There's no rush to fill it. 🌿",
         pattern_insight: null,
-        gentle_prompt: "What's one small thing that made you feel something today?",
+        gentle_prompt:
+          "What's one small thing that made you feel something today?",
         coping_suggestion: null,
       });
     }
@@ -146,7 +162,8 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error("AI insights error:", error);
     return NextResponse.json({
-      mood_reflection: "I'm here with you, even if words are hard to find right now. 💛",
+      mood_reflection:
+        "I'm here with you, even if words are hard to find right now. 💛",
       pattern_insight: null,
       gentle_prompt: "What's one thing you'd like to let go of today?",
       coping_suggestion: "Try taking three slow, deep breaths — just for you.",

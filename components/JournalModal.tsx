@@ -936,7 +936,7 @@ export default function JournalModal({
                             emotions and patterns.
                           </p>
                           <p className="text-xs text-lavender-600 mb-3">
-                            You'll need a free Groq API key — no credit card
+                            You&apos;ll need a free Groq API key — no credit card
                             required. It takes 30 seconds:
                           </p>
                           <ol className="text-xs text-lavender-600 space-y-1 mb-4 list-decimal list-inside">
@@ -951,7 +951,7 @@ export default function JournalModal({
                                 console.groq.com/keys
                               </a>
                             </li>
-                            <li>Sign up (free) &amp; click "Create API Key"</li>
+                            <li>Sign up (free) &amp; click &ldquo;Create API Key&rdquo;</li>
                             <li>Paste it below</li>
                           </ol>
                           {showKeyInput ? (
@@ -986,7 +986,7 @@ export default function JournalModal({
                               </div>
                               <p className="text-[10px] text-lavender-400">
                                 🔒 Your key is stored locally in your browser
-                                only. Never sent anywhere except Groq's API.
+                                only. Never sent anywhere except Groq&apos;s API.
                               </p>
                             </div>
                           ) : (
@@ -1052,7 +1052,7 @@ export default function JournalModal({
                         ) : (
                           <div className="flex flex-col items-center justify-center py-8 text-sand-400">
                             <p className="text-sm text-center">
-                              Click "Refresh ✨" to get personalized insights
+                              Click &ldquo;Refresh ✨&rdquo; to get personalized insights
                               based on your entry
                             </p>
                           </div>

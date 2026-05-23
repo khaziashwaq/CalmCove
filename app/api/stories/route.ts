@@ -9,7 +9,7 @@ export async function GET() {
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to fetch stories" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to create story" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

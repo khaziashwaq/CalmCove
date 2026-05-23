@@ -3,7 +3,7 @@ import { createComment } from "@/lib/firestore";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const body = await request.json();
@@ -12,7 +12,7 @@ export async function POST(
     if (!content) {
       return NextResponse.json(
         { error: "Comment content is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -26,7 +26,7 @@ export async function POST(
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to create comment" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -12,12 +12,12 @@
 @layer base {
   :root {
     --color-bg: #fffcf5;
-    --color-bg-warm: #FDF1DB;
+    --color-bg-warm: #fdf1db;
     --color-text: #1e3754;
     --color-text-soft: #2c5180;
     --color-text-muted: #6198c8;
-    --color-accent: #437DB7;
-    --color-accent-warm: #F2B100;
+    --color-accent: #437db7;
+    --color-accent-warm: #f2b100;
     --color-border: #fae5b8;
     --color-card: rgba(253, 241, 219, 0.6);
   }
@@ -33,12 +33,19 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-mono), 'Space Mono', monospace;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-mono), "Space Mono", monospace;
     color: var(--color-accent);
   }
 
-  button, a, .card-calm {
+  button,
+  a,
+  .card-calm {
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
@@ -206,20 +213,39 @@
 
 /* Ambient background animations (pure CSS, GPU-accelerated) */
 @keyframes ambient-1 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(15px, -30px); }
-  66% { transform: translate(-10px, 15px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(15px, -30px);
+  }
+  66% {
+    transform: translate(-10px, 15px);
+  }
 }
 
 @keyframes ambient-2 {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(-10px, 20px); }
-  66% { transform: translate(15px, -20px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(-10px, 20px);
+  }
+  66% {
+    transform: translate(15px, -20px);
+  }
 }
 
 @keyframes ambient-3 {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); }
-  50% { transform: translate(-50%, -50%) scale(1.03); }
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.03);
+  }
 }
 
 .animate-ambient-1 {

@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(
         { error: "Missing or invalid authorization token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     if (!user?.uid) {
       return NextResponse.json(
         { error: "Invalid authorization token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function GET(request: Request) {
         const curr = new Date(entries[i].date);
         const prev = new Date(entries[i - 1].date);
         const diffDays = Math.floor(
-          (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+          (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24),
         );
         if (diffDays === 1) {
           tempStreak++;
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       const lastEntryDate = new Date(entries[entries.length - 1].date);
       lastEntryDate.setHours(0, 0, 0, 0);
       const daysSinceLastEntry = Math.floor(
-        (today.getTime() - lastEntryDate.getTime()) / (1000 * 60 * 60 * 24)
+        (today.getTime() - lastEntryDate.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       if (daysSinceLastEntry > 1) {
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
           const curr = new Date(entries[i].date);
           const prev = new Date(entries[i - 1].date);
           const diffDays = Math.floor(
-            (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24)
+            (curr.getTime() - prev.getTime()) / (1000 * 60 * 60 * 24),
           );
           if (diffDays === 1) {
             currentStreak++;
@@ -139,7 +139,7 @@ export async function GET(request: Request) {
             ? error.message
             : "Failed to fetch journal progress",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

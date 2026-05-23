@@ -3,7 +3,7 @@ import { getStoryById, getCommentsByStoryId } from "@/lib/firestore";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const story = await getStoryById(params.id);
@@ -19,7 +19,7 @@ export async function GET(
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to fetch story" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -3,7 +3,7 @@ import { toggleStoryLike, checkUserLike } from "@/lib/firestore";
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const { userId } = await request.json();
@@ -14,14 +14,14 @@ export async function POST(
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to update like" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     const url = new URL(request.url);
@@ -30,7 +30,7 @@ export async function GET(
     if (!userId) {
       return NextResponse.json(
         { error: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function GET(
     console.error("Firestore error:", error);
     return NextResponse.json(
       { error: "Failed to check like status" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

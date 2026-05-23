@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   data: "empty here",
 };
 
-const signUp = () => {
+const SignUp = () => {
   const [formState, formAction] = useFormState(
     registerUserAction,
     INITIAL_STATE
@@ -111,4 +111,4 @@ const signUp = () => {
   );
 };
 
-export default signUp;
+export default SignUp;

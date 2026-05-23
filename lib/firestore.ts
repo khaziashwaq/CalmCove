@@ -46,7 +46,7 @@ export async function createStory(data: {
 export async function getCommentsByStoryId(storyId: string) {
   const q = query(
     collection(db, "stories", storyId, "comments"),
-    orderBy("date", "desc")
+    orderBy("date", "desc"),
   );
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -54,7 +54,7 @@ export async function getCommentsByStoryId(storyId: string) {
 
 export async function createComment(
   storyId: string,
-  data: { author: string; content: string; date: string }
+  data: { author: string; content: string; date: string },
 ) {
   const commentsRef = collection(db, "stories", storyId, "comments");
   const docRef = await addDoc(commentsRef, data);
@@ -104,7 +104,7 @@ export async function createJournalEntry(
     todays_wins?: string;
     gratitude_list?: string;
     personal_reflections?: string;
-  }
+  },
 ) {
   const journalId = `${data.date}-${userId}`;
   const journalRef = doc(db, "journal", journalId);
@@ -124,7 +124,7 @@ export async function getJournalEntries(userId: string, date?: string) {
   const q = query(
     collection(db, "journal"),
     where("user_id", "==", userId),
-    orderBy("date", "desc")
+    orderBy("date", "desc"),
   );
   const snapshot = await getDocs(q);
   return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -134,8 +134,8 @@ export async function getJournalProgress(userId: string) {
   const q = query(
     collection(db, "journal"),
     where("user_id", "==", userId),
-    orderBy("date", "asc")
+    orderBy("date", "asc"),
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as { id: string; date: string; mood: string; habit_tracker?: string; [key: string]: any }));
 }

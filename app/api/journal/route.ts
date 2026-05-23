@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     if (!authHeader) {
       return NextResponse.json(
         { error: "No authorization header" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     if (!token) {
       return NextResponse.json(
         { error: "Invalid authorization header" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
             ? error.message
             : "Failed to create journal entry",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json(
         { error: "Missing or invalid authorization token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -83,7 +83,7 @@ export async function GET(request: Request) {
     if (!user?.uid) {
       return NextResponse.json(
         { error: "Invalid authorization token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -102,7 +102,7 @@ export async function GET(request: Request) {
             ? error.message
             : "Failed to fetch journal entries",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -109,9 +109,7 @@ export default function ProfilePage() {
               <h1 className="text-2xl font-light text-sand-900">
                 {user.displayName || user.email}
               </h1>
-              <p className="text-sm text-sand-500">
-                {user.email}
-              </p>
+              <p className="text-sm text-sand-500">{user.email}</p>
             </div>
           </div>
         </div>
@@ -195,21 +193,24 @@ export default function ProfilePage() {
                 Recent Journal Dates
               </h2>
               <div className="flex flex-wrap gap-2">
-                {progress.entryDates.slice(-20).reverse().map((date) => {
-                  const d = new Date(date);
-                  return (
-                    <span
-                      key={date}
-                      className="rounded-2xl bg-lavender-50 border border-lavender-200/40 px-3 py-1.5 text-sm font-medium text-lavender-700"
-                    >
-                      {d.toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  );
-                })}
+                {progress.entryDates
+                  .slice(-20)
+                  .reverse()
+                  .map((date) => {
+                    const d = new Date(date);
+                    return (
+                      <span
+                        key={date}
+                        className="rounded-2xl bg-lavender-50 border border-lavender-200/40 px-3 py-1.5 text-sm font-medium text-lavender-700"
+                      >
+                        {d.toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </span>
+                    );
+                  })}
               </div>
             </div>
           </>
@@ -222,7 +223,10 @@ export default function ProfilePage() {
             <p className="mt-3 text-sand-500 max-w-md mx-auto leading-relaxed">
               Start journaling to discover patterns in your emotional landscape.
               There&apos;s no right or wrong way to begin.{" "}
-              <a href="/journal" className="text-lavender-500 hover:text-lavender-600 font-medium transition-colors">
+              <a
+                href="/journal"
+                className="text-lavender-500 hover:text-lavender-600 font-medium transition-colors"
+              >
                 Open your journal
               </a>
             </p>
