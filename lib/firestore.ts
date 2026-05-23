@@ -137,5 +137,14 @@ export async function getJournalProgress(userId: string) {
     orderBy("date", "asc"),
   );
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as { id: string; date: string; mood: string; habit_tracker?: string; [key: string]: any }));
+  return snapshot.docs.map(
+    (d) =>
+      ({ id: d.id, ...d.data() }) as {
+        id: string;
+        date: string;
+        mood: string;
+        habit_tracker?: string;
+        [key: string]: any;
+      },
+  );
 }

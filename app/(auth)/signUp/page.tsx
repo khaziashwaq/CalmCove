@@ -13,7 +13,7 @@ const INITIAL_STATE = {
 const SignUp = () => {
   const [formState, formAction] = useFormState(
     registerUserAction,
-    INITIAL_STATE
+    INITIAL_STATE,
   );
 
   console.log(formState, "client");
