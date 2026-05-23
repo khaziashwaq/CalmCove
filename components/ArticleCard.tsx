@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 interface ArticleCardProps {
   title: string;
   description: string;
@@ -10,19 +14,23 @@ export default function ArticleCard({
   link,
 }: ArticleCardProps) {
   return (
-    <div className="max-w-sm rounded-2xl overflow-hidden shadow-lg bg-white p-6">
-      <h2 className="text-xl font-semibold text-gray-900 mb-4">{title}</h2>
-      <p className="text-gray-600 mb-6 text-lg leading-relaxed min-h-[120px]">
+    <motion.div
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.3 }}
+      className="max-w-sm card-calm p-7"
+    >
+      <h2 className="text-lg font-medium text-sand-800 mb-4 leading-snug">{title}</h2>
+      <p className="text-sand-600 mb-6 text-sm leading-relaxed min-h-[100px]">
         {description}
       </p>
       <a
         href={link}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
+        className="inline-block text-sm px-5 py-2 rounded-full bg-steel-500 text-white font-medium hover:bg-steel-600 transition-colors duration-200"
       >
         Read More
       </a>
-    </div>
+    </motion.div>
   );
 }

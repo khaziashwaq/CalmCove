@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
-  signInAnonymously,
   signOut,
   signInWithPopup,
   GoogleAuthProvider,
@@ -22,27 +21,10 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-export const anonymousLogin = async () => {
-  try {
-    const userCredential = await signInAnonymously(auth);
-    console.log("Signed in anonymously", userCredential.user);
-    return userCredential.user;
-  } catch (error) {
-    console.error("Anonymous auth error:", error);
-    throw error;
-  }
-};
-
 export const googleLogin = async () => {
-  try {
-    const provider = new GoogleAuthProvider();
-    const userCredential = await signInWithPopup(auth, provider);
-    console.log("Signed in with Google", userCredential.user);
-    return userCredential.user;
-  } catch (error) {
-    console.error("Google auth error:", error);
-    throw error;
-  }
+  const provider = new GoogleAuthProvider();
+  const userCredential = await signInWithPopup(auth, provider);
+  return userCredential.user;
 };
 
 export const signOutUser = async () => {

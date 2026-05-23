@@ -1,16 +1,23 @@
 "use client";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
+import AmbientBackground from "@/components/AmbientBackground";
 import { usePathname } from "next/navigation";
 
-import { Poppins, Roboto_Mono } from "next/font/google";
+import { Space_Mono, Manrope } from "next/font/google";
 
-const poppins = Poppins({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-mono",
+  weight: ["400", "700"],
+});
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-heading",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export default function RootLayout({
@@ -21,21 +28,28 @@ export default function RootLayout({
   const pathname = usePathname();
   if (pathname.includes("/signIn") || pathname.includes("/signUp")) {
     return (
-      <html lang="en" className={`${poppins.variable}`}>
-        <body>
+      <html lang="en" className={`${spaceMono.variable} ${manrope.variable}`}>
+        <head>
+          <title>CalmCove</title>
+          <link rel="icon" href="/tab.svg" type="image/svg+xml" />
+        </head>
+        <body className="bg-sand-50 h-screen overflow-hidden">
+          <AmbientBackground />
           {children}
-          <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
         </body>
       </html>
     );
   } else {
     return (
-      <html lang="en" className={`${poppins.variable}`}>
-        <body>
+      <html lang="en" className={`${spaceMono.variable} ${manrope.variable}`}>
+        <head>
+          <title>CalmCove</title>
+          <link rel="icon" href="/tab.svg" type="image/svg+xml" />
+        </head>
+        <body className="h-screen overflow-hidden flex flex-col bg-sand-50">
+          <AmbientBackground />
           <NavBar />
-          {children}
-          {!pathname.includes("/journal") && <Footer />}
-          <script src="../path/to/flowbite/dist/flowbite.min.js"></script>
+          <main className="flex-1 overflow-y-auto overflow-x-hidden">{children}</main>
         </body>
       </html>
     );

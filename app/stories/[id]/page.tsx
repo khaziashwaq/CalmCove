@@ -154,8 +154,10 @@ export default function StoryPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading story...</p>
+          <div className="animate-breathe rounded-full h-12 w-12 border-2 border-lavender-300 flex items-center justify-center mx-auto">
+            <div className="h-6 w-6 rounded-full bg-lavender-200/60" />
+          </div>
+          <p className="mt-4 text-sand-500 text-sm">Finding this story for you...</p>
         </div>
       </div>
     );
@@ -163,14 +165,15 @@ export default function StoryPage() {
 
   if (error || !story) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800">
-            {error || "Story not found"}
+      <div className="min-h-screen flex items-center justify-center px-6">
+        <div className="text-center card-calm p-12 max-w-md">
+          <p className="text-3xl mb-4">🍂</p>
+          <h1 className="text-xl font-light text-sand-800 mb-2">
+            {error || "This story has drifted away"}
           </h1>
           <a
             href="/?section=stories"
-            className="text-blue-500 hover:underline mt-4 block"
+            className="text-lavender-500 hover:text-lavender-600 text-sm font-medium transition-colors"
           >
             Return to Stories
           </a>
@@ -180,25 +183,25 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-full overflow-y-auto py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-6">
           <button
             onClick={() => router.push("/storyForm")}
-            className="rounded-lg bg-blue-500 px-6 py-2.5 text-white shadow-md transition-all hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:text-sm md:text-base"
+            className="btn-primary text-sm rounded-2xl"
           >
             Share Your Story
           </button>
         </div>
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div className="card-calm overflow-hidden">
           {/* Story Header */}
-          <div className="p-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="p-5 sm:p-8 pb-4">
+            <h1 className="text-2xl sm:text-3xl font-light text-sand-900 mb-3 leading-snug">
               {story.title}
             </h1>
-            <div className="flex items-center text-gray-600 text-sm">
-              <span>{story.author}</span>
-              <span className="mx-2">•</span>
+            <div className="flex items-center text-sand-500 text-sm">
+              <span className="font-medium text-sand-600">{story.author}</span>
+              <span className="mx-2 text-sand-300">·</span>
               <span>
                 {formatDistanceToNow(new Date(story.date), { addSuffix: true })}
               </span>
@@ -206,10 +209,10 @@ export default function StoryPage() {
           </div>
 
           {/* Story Content */}
-          <div className="px-6 py-4">
+          <div className="px-5 sm:px-8 py-4 sm:py-6">
             <div className="prose max-w-none">
               {story.content.split("\n\n").map((paragraph, index) => (
-                <p key={index} className="mb-4 text-gray-700 leading-relaxed">
+                <p key={index} className="mb-5 text-sand-700 leading-relaxed text-[0.95rem]">
                   {paragraph}
                 </p>
               ))}
@@ -217,13 +220,13 @@ export default function StoryPage() {
           </div>
 
           {/* Like Button */}
-          <div className="px-6 py-4 border-t border-gray-200">
+          <div className="px-5 sm:px-8 py-4 border-t border-sand-200/40">
             <button
               onClick={handleLike}
-              className={`flex items-center space-x-2 ${
+              className={`flex items-center space-x-2 transition-all duration-300 ${
                 hasLiked
-                  ? "text-red-500 hover:text-red-600"
-                  : "text-gray-500 hover:text-gray-600"
+                  ? "text-rose-400 hover:text-rose-500"
+                  : "text-sand-400 hover:text-rose-400"
               }`}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -233,44 +236,46 @@ export default function StoryPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              <span>{story?.likes || 0}</span>
+              <span className="text-sm">{story?.likes || 0}</span>
             </button>
           </div>
 
           {/* Comments Section */}
-          <div className="px-6 py-4 border-t border-gray-200">
-            <h2 className="text-xl font-semibold mb-4">Comments</h2>
+          <div className="px-5 sm:px-8 py-4 sm:py-6 border-t border-sand-200/40">
+            <h2 className="text-lg font-medium text-sand-800 mb-5">
+              Thoughts & Reflections
+            </h2>
 
             {/* Add Comment */}
-            <div className="mb-6">
+            <div className="mb-8">
               <textarea
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Share your thoughts..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Share your thoughts gently..."
+                className="input-calm min-h-[100px] resize-none"
                 rows={3}
               />
               <button
                 onClick={handleAddComment}
-                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="btn-warm mt-3 text-sm rounded-2xl"
               >
-                Comment
+                Share Thought
               </button>
             </div>
 
             {/* Comments List */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               {comments.map((comment) => (
-                <div key={comment.id} className="border-b border-gray-200 pb-4">
+                <div key={comment.id} className="border-b border-sand-200/30 pb-5 last:border-b-0">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">{comment.author}</span>
-                    <span className="text-sm text-gray-500">
+                    <span className="font-medium text-sand-700 text-sm">{comment.author}</span>
+                    <span className="text-xs text-sand-400">
                       {formatDistanceToNow(new Date(comment.date), {
                         addSuffix: true,
                       })}
                     </span>
                   </div>
-                  <p className="text-gray-700">{comment.content}</p>
+                  <p className="text-sand-600 text-sm leading-relaxed">{comment.content}</p>
                 </div>
               ))}
             </div>

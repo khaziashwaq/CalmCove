@@ -2,6 +2,9 @@
 
 import { registerUserAction } from "@/data/actions/auth-actions";
 import { useFormState } from "react-dom";
+import { FadeIn } from "@/components/animations";
+import { motion } from "framer-motion";
+import ScribbleButton from "@/components/ScribbleButton";
 
 const INITIAL_STATE = {
   data: "empty here",
@@ -15,92 +18,96 @@ const signUp = () => {
 
   console.log(formState, "client");
   return (
-    <section className="lg:px-44">
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm"></div>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <FadeIn delay={0.1}>
+        <div className="w-full max-w-md card-calm p-10">
+          <div className="text-center mb-8">
+            <motion.div
+              className="text-4xl mb-4"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              🌱
+            </motion.div>
+            <h1 className="text-2xl font-light text-sand-900 tracking-tight">
+              Begin your journey
+            </h1>
+            <p className="text-sand-500 mt-2 text-sm">
+              Create a space that&apos;s yours
+            </p>
+          </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action={formAction} method="POST" className="space-y-6">
+          <form action={formAction} method="POST" className="space-y-5">
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm/6 font-medium text-gray-900"
+                className="block text-sm font-medium text-sand-700 mb-2"
               >
                 Username
               </label>
-              <div className="mt-2">
-                <input
-                  id="username"
-                  name="username"
-                  type="username"
-                  required
-                  autoComplete="username"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                autoComplete="username"
+                className="input-calm"
+                placeholder="Choose a name you love"
+              />
             </div>
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm/6 font-medium text-gray-900"
+                className="block text-sm font-medium text-sand-700 mb-2"
               >
                 Email address
               </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  autoComplete="email"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                className="input-calm"
+                placeholder="your@email.com"
+              />
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  autoComplete="current-password"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-sand-700 mb-2"
               >
-                Login
-              </button>
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                className="input-calm"
+                placeholder="Something memorable"
+              />
             </div>
+
+            <ScribbleButton type="submit" className="w-full py-3.5 text-base">
+              Create my space
+            </ScribbleButton>
           </form>
 
-          <p className="mt-10 text-center text-sm/6 text-gray-500">
-            Have an account?{" "}
+          <p className="mt-8 text-center text-sm text-sand-500">
+            Already have an account?{" "}
             <a
               href="/signIn"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-lavender-600 hover:text-lavender-700 transition-colors"
             >
-              Sign In!
+              Welcome back
             </a>
           </p>
         </div>
-      </div>
-    </section>
+      </FadeIn>
+    </div>
   );
 };
 

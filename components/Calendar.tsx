@@ -8,6 +8,8 @@ import React, {
   useState,
 } from "react";
 import JournalModal from "./JournalModal";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const monthNames = [
@@ -40,10 +42,46 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(today.getMonth());
+  const [entryMoods, setEntryMoods] = useState<Map<string, string>>(new Map());
+  const [user, setUser] = useState<User | null>(null);
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
     value: `${index}`,
   }));
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
+    return () => unsubscribe();
+  }, []);
+
+  // Fetch entry moods to show emoji indicators on calendar
+  const fetchEntryMoods = useCallback(async () => {
+    if (!user) return;
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/journal/progress", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (data.entryMoods) {
+          setEntryMoods(new Map(Object.entries(data.entryMoods)));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch entry moods:", error);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchEntryMoods();
+  }, [fetchEntryMoods]);
+
+  // Refresh entry moods when modal closes
+  const handleModalClose = () => {
+    setIsOpen(false);
+    fetchEntryMoods();
+  };
 
   useEffect(() => {
     // Scroll to today's date when component mounts
@@ -119,11 +157,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
   };
 
   const handleModal = (day: number, month: number, year: number) => {
-    setIsOpen((prev) => {
-      console.log("Previous isOpen:", prev);
-      return !prev;
-    });
-
+    setIsOpen(true);
     setSelectedDate({ day, month, year });
   };
 
@@ -166,6 +200,11 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
       calendarWeeks.push(calendarDays.slice(i, i + 7));
     }
 
+    // Pre-compute the first valid date index to avoid O(n²) check per cell
+    const firstValidIndex = calendarDays.findIndex(
+      ({ month, day }) => month >= 0 && new Date(year, month, day) <= today
+    );
+
     const calendar = calendarWeeks.map((week, weekIndex) => (
       <div className="flex w-full" key={`week-${weekIndex}`}>
         {week.map(({ month, day }, dayIndex) => {
@@ -177,11 +216,23 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
             today.getDate() === day &&
             today.getFullYear() === year;
 
+          const dateStr = `${year}-${month + 1}-${day}`;
+          const entryMood = entryMoods.get(dateStr);
+          const hasEntry = !!entryMood;
+
           const isFutureDate = new Date(year, month, day) > today;
-          const hasPreviousData = calendarDays
-            .slice(0, index)
-            .some(({ month: m, day: d }) => new Date(year, m, d) <= today);
-          const isDisabledDate = isFutureDate || !hasPreviousData;
+          const isPastDate = !isToday && !isFutureDate;
+          const isDisabledDate = isFutureDate || index < firstValidIndex || (isPastDate && !hasEntry);
+
+          const moodEmojiMap: Record<string, string> = {
+            Happy: "🌟",
+            Sad: "🌧️",
+            Excited: "⚡",
+            Peaceful: "🌸",
+            Anxious: "🌊",
+            Tired: "😴",
+            Neutral: "😐",
+          };
 
           return (
             <div
@@ -194,25 +245,33 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
               onClick={(e) => {
                 if (!isDisabledDate) {
                   handleDayClick(day, month, year);
+                  handleModal(day, month, year);
                 }
               }}
-              className={`relative m-[-0.5px] group aspect-square w-full grow cursor-pointer rounded-xl border font-medium transition-all hover:border-cyan-400 sm:-m-px sm:size-20 sm:rounded-2xl sm:border-2 lg:size-36 lg:rounded-3xl 2xl:size-40 ${
-                isFutureDate ? "cursor-not-allowed opacity-50" : ""
+              className={`relative m-[-0.5px] group aspect-square w-full grow rounded-lg border border-sand-200/40 font-medium transition-all duration-300 sm:-m-px sm:rounded-xl sm:border md:rounded-2xl lg:rounded-3xl ${
+                isDisabledDate ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:border-rose-300 hover:shadow-soft"
+              } ${
+                hasEntry ? "bg-gradient-to-br from-rose-50/60 to-rose-100/40 border-rose-200/60" : ""
               }`}
             >
               <span
-                className={`absolute left-1 top-1 flex size-5 items-center justify-center rounded-full text-xs sm:size-6 sm:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${
-                  isToday ? "bg-blue-500 font-semibold text-white" : ""
+                className={`absolute left-0.5 top-0.5 flex size-4 items-center justify-center rounded-full text-[10px] sm:size-5 sm:text-xs sm:left-1 sm:top-1 md:size-6 md:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${
+                  isToday ? "bg-rose-300 font-semibold text-white shadow-glow" : ""
                 } ${
                   month < 0 || isFutureDate
-                    ? "text-slate-400"
-                    : "text-slate-800"
+                    ? "text-sand-400"
+                    : "text-sand-700"
                 }`}
               >
                 {day}
               </span>
+              {hasEntry && entryMood && (
+                <span className="absolute flex items-center justify-center left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-sm sm:text-lg md:text-2xl lg:text-4xl 2xl:text-5xl" title={entryMood}>
+                  {moodEmojiMap[entryMood] || "😐"}
+                </span>
+              )}
               {isNewMonth && (
-                <span className="absolute bottom-0.5 left-0 w-full truncate px-1.5 text-sm font-semibold text-slate-300 sm:bottom-0 sm:text-lg lg:bottom-2.5 lg:left-3.5 lg:-mb-1 lg:w-fit lg:px-0 lg:text-xl 2xl:mb-[-4px] 2xl:text-2xl">
+                <span className="absolute bottom-0 left-0 w-full truncate px-0.5 text-[9px] font-medium text-sand-300/70 sm:text-sm sm:px-1.5 md:text-lg lg:bottom-2.5 lg:left-3.5 lg:-mb-1 lg:w-fit lg:px-0 lg:text-xl 2xl:mb-[-4px] 2xl:text-2xl">
                   {monthNames[month]}
                 </span>
               )}
@@ -223,10 +282,10 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
                     e.stopPropagation();
                     handleModal(day, month, year);
                   }}
-                  className="absolute right-2 top-2 rounded-full opacity-0 transition-all focus:opacity-100 group-hover:opacity-100"
+                  className="absolute right-1 top-1 sm:right-2 sm:top-2 rounded-full opacity-0 transition-all focus:opacity-100 group-hover:opacity-100"
                 >
                   <svg
-                    className="size-8 scale-90 text-blue-500 transition-all hover:scale-100 group-focus:scale-100"
+                    className="size-5 sm:size-8 scale-90 text-rose-300 transition-all hover:scale-100 group-focus:scale-100"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -249,7 +308,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
     ));
 
     return <div>{calendar}</div>;
-  }, [year]);
+  }, [year, entryMoods]);
 
   useEffect(() => {
     const calendarContainer = document.querySelector(".calendar-container");
@@ -285,8 +344,8 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
   }, []);
 
   return (
-    <div className="scrollbar-hide calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
-      <div className="sticky -top-px z-[10] w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8">
+    <div className="scrollbar-hide calendar-container max-h-full overflow-y-scroll rounded-t-3xl bg-sand-50/90 backdrop-blur-sm pb-10 text-sand-800">
+      <div className="sticky -top-px z-[10] w-full rounded-t-2xl sm:rounded-t-3xl bg-sand-50/95 backdrop-blur-xl px-3 pt-5 sm:px-5 sm:pt-7 md:px-8 md:pt-8 border-b border-sand-200/30">
         <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-6">
           <div className="flex flex-wrap gap-2 sm:gap-3">
             <Select
@@ -298,7 +357,7 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
             <button
               onClick={handleTodayClick}
               type="button"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
+              className="rounded-2xl border border-sand-200 bg-white/60 px-3 py-1.5 text-sm font-medium text-sand-700 hover:bg-sand-100 transition-all duration-300 lg:px-5 lg:py-2.5"
             >
               Today
             </button>
@@ -306,10 +365,10 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
           <div className="flex w-fit items-center justify-between">
             <button
               onClick={handlePrevYear}
-              className="rounded-full border border-slate-300 p-1 transition-colors hover:bg-slate-100 sm:p-2"
+              className="rounded-full border border-sand-200 p-1 transition-all duration-300 hover:bg-sand-100 sm:p-2"
             >
               <svg
-                className="size-5 text-slate-800"
+                className="size-5 text-sand-600"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -326,15 +385,15 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
                 />
               </svg>
             </button>
-            <h1 className="min-w-16 text-center text-lg font-semibold sm:min-w-20 sm:text-xl">
+            <h1 className="min-w-16 text-center text-lg font-medium text-sand-800 sm:min-w-20 sm:text-xl">
               {year}
             </h1>
             <button
               onClick={handleNextYear}
-              className="rounded-full border border-slate-300 p-1 transition-colors hover:bg-slate-100 sm:p-2"
+              className="rounded-full border border-sand-200 p-1 transition-all duration-300 hover:bg-sand-100 sm:p-2"
             >
               <svg
-                className="size-5 text-slate-800"
+                className="size-5 text-sand-600"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -353,11 +412,11 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
             </button>
           </div>
         </div>
-        <div className="grid w-full grid-cols-7 justify-between text-slate-500">
+        <div className="grid w-full grid-cols-7 justify-between text-sand-500">
           {daysOfWeek.map((day, index) => (
             <div
               key={index}
-              className="w-full border-b border-slate-200 py-2 text-center font-semibold"
+              className="w-full border-b border-sand-200/40 py-2 text-center text-sm font-medium"
             >
               {day}
             </div>
@@ -368,10 +427,10 @@ const Calendar: React.FC<ContinuousCalendarProps> = ({ onClick }) => {
         <JournalModal
           isOpen={isOpen}
           selectedDate={selectedDate}
-          onClose={() => setIsOpen(false)}
+          onClose={handleModalClose}
         />
       )}
-      <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">{generateCalendar}</div>
+      <div className="w-full px-3 pt-3 sm:px-5 sm:pt-4 md:px-8 md:pt-6">{generateCalendar}</div>
     </div>
   );
 };
@@ -404,7 +463,7 @@ export const Select = ({
       name={name}
       value={value}
       onChange={onChange}
-      className="cursor-pointer rounded-lg border border-gray-300 bg-white py-1.5 pl-2 pr-6 text-sm font-medium text-gray-900 hover:bg-gray-100 sm:rounded-xl sm:py-2.5 sm:pl-3 sm:pr-8"
+      className="cursor-pointer rounded-2xl border border-sand-200 bg-white/60 py-1.5 pl-2 pr-6 text-sm font-medium text-sand-700 hover:bg-sand-100 transition-all duration-300 sm:rounded-2xl sm:py-2.5 sm:pl-3 sm:pr-8"
       required
     >
       {options.map((option) => (
@@ -415,7 +474,7 @@ export const Select = ({
     </select>
     <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-1 sm:pr-2">
       <svg
-        className="size-5 text-slate-600"
+        className="size-5 text-sand-500"
         viewBox="0 0 20 20"
         fill="currentColor"
         aria-hidden="true"

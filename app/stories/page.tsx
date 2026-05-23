@@ -1,17 +1,17 @@
 "use client";
 
-import Hero from "@/components/Hero";
+import Stories from "@/components/Stories";
 import { motion } from "framer-motion";
 
-export default function Home() {
+export default function StoriesPage() {
   return (
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="flex h-full flex-col items-center justify-center"
+      className="h-full"
     >
-      <Hero />
+      <Stories />
     </motion.main>
   );
 }

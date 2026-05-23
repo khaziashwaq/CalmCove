@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
-import { getDb } from "@/lib/db";
 import { headers } from "next/headers";
 import { getFirebaseAdmin } from "@/lib/firebaseAdmin";
+import { createJournalEntry, getJournalEntries } from "@/lib/firestore";
 
 export async function POST(request: Request) {
   try {
-    console.log("Starting journal entry creation...");
-    const db = await getDb();
     const headersList = headers();
     const authHeader = headersList.get("authorization");
 
     if (!authHeader) {
-      console.log("No authorization header found");
       return NextResponse.json(
         { error: "No authorization header" },
         { status: 401 }
@@ -20,22 +17,18 @@ export async function POST(request: Request) {
 
     const token = authHeader.split("Bearer ")[1];
     if (!token) {
-      console.log("Invalid authorization header format");
       return NextResponse.json(
         { error: "Invalid authorization header" },
         { status: 401 }
       );
     }
 
-    console.log("Verifying Firebase token...");
     const auth = getFirebaseAdmin();
     const user = await auth.verifyIdToken(token);
-    console.log("Token verified for user:", user.uid);
 
     const body = await request.json();
 
     const {
-      id,
       date,
       mood,
       daily_tasks,
@@ -45,60 +38,69 @@ export async function POST(request: Request) {
       todays_wins,
       gratitude_list,
       personal_reflections,
-      user_id,
     } = body;
 
-    // Remove id from destructuring since we generate it
-    const journalId = `${date}-${user.uid}`;
-    console.log("Generated journal ID:", journalId);
+    const journalId = await createJournalEntry(user.uid, {
+      date,
+      mood,
+      daily_tasks,
+      goals_for_tomorrow,
+      creative_ideas,
+      habit_tracker,
+      todays_wins,
+      gratitude_list,
+      personal_reflections,
+    });
 
-    try {
-      const result = await db.run(
-        `INSERT INTO journal (
-          id,
-          date,
-          mood,
-          daily_tasks,
-          goals_for_tomorrow,
-          creative_ideas,
-          habit_tracker,
-          todays_wins,
-          gratitude_list,
-          personal_reflections,
-          user_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          id,
-          date,
-          mood,
-          daily_tasks,
-          goals_for_tomorrow,
-          creative_ideas,
-          habit_tracker,
-          todays_wins,
-          gratitude_list,
-          personal_reflections,
-          user.uid,
-        ]
-      );
-      console.log("Database insert completed:", result);
-    } catch (dbError: unknown) {
-      console.error("Database insert error:", dbError);
-      if (dbError instanceof Error) {
-        throw new Error(`Database insert failed: ${dbError.message}`);
-      }
-      throw new Error("Database insert failed: Unknown error");
-    }
-
-    return NextResponse.json({ success: true, id });
+    return NextResponse.json({ success: true, id: journalId });
   } catch (error) {
-    console.error("Full error details:", error);
+    console.error("Error creating journal entry:", error);
     return NextResponse.json(
       {
         error:
           error instanceof Error
             ? error.message
             : "Failed to create journal entry",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(request: Request) {
+  try {
+    const authHeader = request.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "Missing or invalid authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+    const auth = getFirebaseAdmin();
+    const user = await auth.verifyIdToken(token);
+    if (!user?.uid) {
+      return NextResponse.json(
+        { error: "Invalid authorization token" },
+        { status: 401 }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const date = searchParams.get("date") || undefined;
+
+    const entries = await getJournalEntries(user.uid, date);
+
+    return NextResponse.json(entries || []);
+  } catch (error) {
+    console.error("Error fetching journal entries:", error);
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch journal entries",
       },
       { status: 500 }
     );

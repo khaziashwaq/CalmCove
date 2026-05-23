@@ -2,17 +2,237 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Virgil";
+  src: url("/Excalifont-Regular.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --color-bg: #fffcf5;
+    --color-bg-warm: #FDF1DB;
+    --color-text: #1e3754;
+    --color-text-soft: #2c5180;
+    --color-text-muted: #6198c8;
+    --color-accent: #437DB7;
+    --color-accent-warm: #F2B100;
+    --color-border: #fae5b8;
+    --color-card: rgba(253, 241, 219, 0.6);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-sand-50 font-sans text-steel-800 antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-mono), 'Space Mono', monospace;
+    color: var(--color-accent);
+  }
+
+  button, a, .card-calm {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  ::selection {
+    @apply bg-steel-100 text-steel-800;
+  }
+}
+
+@layer components {
+  /* Noise/grain overlay */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.015;
+    will-change: auto;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Vignette effect */
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9998;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(250, 248, 245, 0.6) 100%
+    );
+  }
+
+  /* Calming card style */
+  .card-calm {
+    @apply rounded-3xl border border-sand-200/60 bg-[var(--color-card)] backdrop-blur-sm shadow-soft;
+    transition:
+      box-shadow 0.4s ease,
+      border-color 0.4s ease,
+      transform 0.4s ease;
+  }
+
+  .card-calm:hover {
+    @apply shadow-warm border-sand-300/60;
+    transform: translateY(-2px);
+  }
+
+  /* Warm button */
+  .btn-warm {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300;
+    @apply bg-gold-400 text-gold-900 border border-gold-500/60;
+    @apply hover:bg-gold-300 hover:shadow-soft;
+    @apply focus:outline-none focus:ring-2 focus:ring-gold-300/40 focus:ring-offset-2 focus:ring-offset-sand-50;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300;
+    @apply bg-steel-500 text-white border border-steel-600;
+    @apply hover:bg-steel-600 hover:shadow-lg;
+    @apply focus:outline-none focus:ring-2 focus:ring-steel-300/40 focus:ring-offset-2 focus:ring-offset-sand-50;
+  }
+
+  .btn-sage {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition-all duration-300;
+    @apply bg-sage-100 text-sage-700 border border-sage-200/60;
+    @apply hover:bg-sage-200/80 hover:shadow-soft;
+    @apply focus:outline-none focus:ring-2 focus:ring-sage-300/40 focus:ring-offset-2 focus:ring-offset-sand-50;
+  }
+
+  /* Input calm */
+  .input-calm {
+    @apply w-full rounded-2xl border border-sand-200 bg-white/60 px-4 py-3 text-sand-900 backdrop-blur-sm;
+    @apply placeholder:text-sand-400 transition-all duration-300;
+    @apply focus:border-steel-300 focus:outline-none focus:ring-2 focus:ring-steel-200/30 focus:bg-white/80;
+  }
+}
+
+/* Scrollbar styling */
 .scrollbar-hide {
   scrollbar-width: none;
 }
 
-.embla {
-  overflow: hidden;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
+
+/* Custom scrollbar for calm areas */
+.scrollbar-calm::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-calm::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollbar-calm::-webkit-scrollbar-thumb {
+  @apply bg-sand-300/40 rounded-full;
+}
+
+.scrollbar-calm::-webkit-scrollbar-thumb:hover {
+  @apply bg-sand-400/50;
+}
+
+/* Embla carousel */
 .embla__container {
   display: flex;
 }
 .embla__slide {
   flex: 0 0 100%;
   min-width: 0;
+}
+
+/* Journal page styles */
+.journal-page {
+  background-color: #fdf8ef;
+  background-image: linear-gradient(#e8d5b7 1px, transparent 1px);
+  background-size: 100% 32px;
+  background-position: 0 60px;
+  font-family: "Virgil", cursive;
+  position: relative;
+}
+
+.journal-page::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 48px;
+  width: 2px;
+  height: 100%;
+  background-color: #d4a8a8;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.journal-card {
+  background-color: rgba(253, 248, 239, 0.6);
+  border: 1px solid #e8d5b7;
+  font-family: "Virgil", cursive;
+}
+
+.journal-card h3 {
+  font-family: "Virgil", cursive;
+  font-weight: 600;
+}
+
+.journal-card [contenteditable],
+.journal-card .todo-container,
+.journal-card .bullet-container {
+  font-family: "Virgil", cursive;
+  font-size: 1.15rem;
+  line-height: 32px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Ambient background animations (pure CSS, GPU-accelerated) */
+@keyframes ambient-1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(15px, -30px); }
+  66% { transform: translate(-10px, 15px); }
+}
+
+@keyframes ambient-2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-10px, 20px); }
+  66% { transform: translate(15px, -20px); }
+}
+
+@keyframes ambient-3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.03); }
+}
+
+.animate-ambient-1 {
+  animation: ambient-1 30s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-ambient-2 {
+  animation: ambient-2 35s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-ambient-3 {
+  animation: ambient-3 25s ease-in-out infinite;
+  will-change: transform;
 }
