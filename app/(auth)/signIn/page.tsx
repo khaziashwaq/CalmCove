@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { googleLogin } from "@/firebaseConfig";
+import { googleLogin, handleRedirectResult } from "@/firebaseConfig";
 import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { motion } from "framer-motion";
@@ -12,8 +12,9 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // If already logged in, redirect to home
+  // If already logged in or returning from redirect, go home
   useEffect(() => {
+    handleRedirectResult().catch(() => {});
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) router.push("/");
     });
@@ -24,16 +25,12 @@ export default function SignIn() {
     try {
       setLoading(true);
       setError("");
-      await googleLogin();
-      router.push("/");
+      const user = await googleLogin();
+      if (user) router.push("/");
+      // If null, redirect flow started — page will reload
     } catch (error: any) {
-      // Ignore popup-closed-by-user — not a real error
-      if (error?.code === "auth/popup-closed-by-user") {
-        setLoading(false);
-        return;
-      }
-      console.error("Google login error:", error);
-      setError("Failed to sign in with Google. Please try again.");
+      setError("Failed to sign in. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
