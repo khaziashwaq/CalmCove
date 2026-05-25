@@ -9,28 +9,31 @@ import { FadeIn } from "@/components/animations";
 
 export default function SignIn() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start true while checking auth
   const [error, setError] = useState("");
 
   // If already logged in or returning from redirect, go home
   useEffect(() => {
     handleRedirectResult().catch(() => {});
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) router.push("/");
+      if (user) {
+        // Use window.location for a full navigation to avoid Next.js router issues
+        window.location.href = "/";
+      } else {
+        setLoading(false);
+      }
     });
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
       setError("");
-      const user = await googleLogin();
-      if (user) router.push("/");
-      // If null, redirect flow started — page will reload
+      await googleLogin();
+      // onAuthStateChanged will handle the redirect
     } catch (error: any) {
       setError("Failed to sign in. Please try again.");
-    } finally {
       setLoading(false);
     }
   };

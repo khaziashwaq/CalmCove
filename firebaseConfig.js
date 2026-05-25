@@ -30,14 +30,13 @@ export const googleLogin = async () => {
     const result = await signInWithPopup(auth, provider);
     return result.user;
   } catch (error) {
-    if (
-      error.code === "auth/popup-blocked" ||
-      error.code === "auth/popup-closed-by-user"
-    ) {
-      // Fall back to redirect (works everywhere)
+    if (error.code === "auth/popup-blocked") {
+      // Fall back to redirect only if popup was actually blocked
       await signInWithRedirect(auth, provider);
       return null;
     }
+    // For popup-closed-by-user or cancelled-popup-request, don't fall back
+    // Just rethrow so the UI can handle it
     throw error;
   }
 };
