@@ -14,10 +14,16 @@ export default function SignIn() {
 
   // If already logged in or returning from redirect, go home
   useEffect(() => {
-    handleRedirectResult().catch(() => {});
+    handleRedirectResult()
+      .then((result) => {
+        // If we got a user from redirect, navigate home
+        if (result?.user) {
+          window.location.href = "/";
+        }
+      })
+      .catch(() => {});
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // Use window.location for a full navigation to avoid Next.js router issues
         window.location.href = "/";
       } else {
         setLoading(false);
