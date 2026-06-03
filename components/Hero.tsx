@@ -7,10 +7,10 @@ import { FadeIn } from "@/components/animations";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[75vh] w-full flex items-center overflow-hidden px-4 sm:px-6 md:px-10 lg:px-12 xl:px-16 py-6 sm:py-10 lg:py-16">
+    <section className="relative min-h-[auto] sm:min-h-[75vh] w-full flex items-center overflow-hidden px-4 sm:px-6 md:px-10 lg:px-12 xl:px-16 py-4 sm:py-10 lg:py-16">
       {/* Sketched decorative marks */}
       <svg
-        className="absolute top-16 right-12 w-10 sm:w-16 h-10 sm:h-16 text-gold-400 opacity-60 pointer-events-none hidden sm:block"
+        className="absolute top-16 right-12 w-10 sm:w-16 h-10 sm:h-16 text-gold-400 opacity-60 pointer-events-none"
         viewBox="0 0 50 50"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +26,7 @@ const Hero = () => {
         />
       </svg>
       <svg
-        className="absolute bottom-24 left-16 w-8 sm:w-10 h-8 sm:h-10 text-rose-300 opacity-50 pointer-events-none hidden sm:block"
+        className="absolute bottom-24 left-16 w-8 sm:w-10 h-8 sm:h-10 text-rose-300 opacity-50 pointer-events-none"
         viewBox="0 0 50 50"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@ const Hero = () => {
         />
       </svg>
       <svg
-        className="absolute top-1/3 right-1/4 w-8 h-8 text-sage-400 opacity-40 pointer-events-none hidden md:block"
+        className="absolute top-1/3 right-1/4 w-8 h-8 text-sage-400 opacity-40 pointer-events-none"
         viewBox="0 0 30 30"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@ const Hero = () => {
         />
       </svg>
       <svg
-        className="absolute bottom-1/3 right-20 w-6 h-6 text-steel-300 opacity-50 pointer-events-none hidden md:block"
+        className="absolute bottom-1/3 right-20 w-6 h-6 text-steel-300 opacity-50 pointer-events-none"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ const Hero = () => {
         />
       </svg>
       <svg
-        className="absolute top-2/3 left-1/3 w-12 h-12 text-gold-400 opacity-30 pointer-events-none hidden lg:block"
+        className="absolute top-2/3 left-1/3 w-12 h-12 text-gold-400 opacity-30 pointer-events-none"
         viewBox="0 0 40 40"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -91,15 +91,15 @@ const Hero = () => {
         />
       </svg>
 
-      <div className="max-w-7xl mx-auto w-full sm:w-[90%] lg:w-[85%] xl:w-[75%] flex flex-col lg:flex-row items-center lg:items-center gap-6">
+      <div className="max-w-7xl mx-auto w-full sm:w-[90%] lg:w-[85%] xl:w-[75%] flex flex-col lg:flex-row items-center lg:items-center gap-3 sm:gap-6">
         {/* Left - Heading & Subtitle */}
         <div className="relative z-10 flex-1 max-w-3xl text-center lg:text-left">
           <FadeIn delay={0.25}>
             <div className="flex flex-col justify-center">
-              <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[4rem] 2xl:text-[4.5rem] font-bold tracking-tight text-steel-800 leading-[1.1] mb-4 sm:mb-5">
+              <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[4rem] 2xl:text-[4.5rem] font-bold tracking-tight text-steel-800 leading-[1.1] mb-2 sm:mb-5">
                 You don&apos;t have to face it alone.
               </h1>
-              <p className="text-base sm:text-lg lg:text-lg text-steel-500 leading-relaxed max-w-lg pb-3">
+              <p className="text-sm sm:text-lg lg:text-lg text-steel-500 leading-relaxed max-w-lg pb-2 sm:pb-3">
                 Your digital retreat. A calm space to explore, share, and find
                 comfort in the journey of mental wellness.
               </p>
@@ -107,7 +107,7 @@ const Hero = () => {
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
               <Link href="/Information">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -143,7 +143,7 @@ const Hero = () => {
         </div>
 
         {/* Right - Illustration */}
-        <div className="hidden lg:flex flex-shrink-0 items-center justify-center">
+        <div className="flex flex-shrink-0 items-center justify-center">
           <FadeIn delay={0.35}>
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -158,7 +158,7 @@ const Hero = () => {
                 alt="Person contemplating"
                 width={600}
                 height={600}
-                className="w-[340px] xl:w-[400px] 2xl:w-[440px] h-auto"
+                className="w-[200px] sm:w-[280px] lg:w-[340px] xl:w-[400px] 2xl:w-[440px] h-auto"
                 priority
               />
             </motion.div>
